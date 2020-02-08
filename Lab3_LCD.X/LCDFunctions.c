@@ -1,4 +1,5 @@
-#include <pic16f877.h>
+//#include <pic16f877.h>
+#include <xc.h>
 #include "LCDFunctions.h"
 /*Tomado de https://www.exploreembedded.com/wiki/Interfacing_LCD_with_PIC16F877A_8-bit_mode
  Credito al autor original: Explore embedded wiki*

@@ -142,6 +142,14 @@
         <property key="remove-unused-sections" value="true"/>
       </HI-TECH-LINK>
       <item path="LCDFunctions.c" ex="true" overriding="false">
+        <HI-TECH-COMP>
+        </HI-TECH-COMP>
+        <HI-TECH-LINK>
+        </HI-TECH-LINK>
+        <XC8-config-global>
+        </XC8-config-global>
+      </item>
+      <item path="LCDFunctions.h" ex="true" overriding="false">
       </item>
       <Simulator>
         <property key="codecoverage.enabled" value="Disable"/>

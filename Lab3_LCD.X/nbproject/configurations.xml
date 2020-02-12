@@ -5,6 +5,7 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>LCDFunctions.h</itemPath>
+      <itemPath>LCD_Instructions.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -13,9 +14,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>LCD_prog.c</itemPath>
-      <itemPath>LCDFunctions.c</itemPath>
-      <itemPath>LCDLibV2.c</itemPath>
+      <itemPath>LCD_Instructions.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -134,14 +133,6 @@
         <property key="opt-xc8-linker-serial" value=""/>
         <property key="program-the-device-with-default-config-words" value="true"/>
       </HI-TECH-LINK>
-      <item path="LCDFunctions.c" ex="true" overriding="false">
-        <HI-TECH-COMP>
-        </HI-TECH-COMP>
-        <HI-TECH-LINK>
-        </HI-TECH-LINK>
-        <XC8-config-global>
-        </XC8-config-global>
-      </item>
       <item path="LCDFunctions.h" ex="true" overriding="false">
         <HI-TECH-COMP>
         </HI-TECH-COMP>
@@ -149,8 +140,6 @@
         </HI-TECH-LINK>
         <XC8-config-global>
         </XC8-config-global>
-      </item>
-      <item path="LCD_prog.c" ex="true" overriding="false">
       </item>
       <PICkit3PlatformTool>
         <property key="AutoSelectMemRanges" value="auto"/>

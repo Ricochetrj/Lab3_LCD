@@ -65,36 +65,85 @@
 #define _XTAL_FREQ 4000000
 void PulsoE(void);
 void WriteCMLCD(unsigned char CM);
-void WriteDataLCD( char msg);
+void WriteDataLCD( uint8_t y,uint8_t x,char *msg);
 void initLCD(void);
-void StringLCD(const char *letras );
-void ClearScreenLCD(void);
+void LCD_CharDisp(uint8_t dato);
+//void StringLCD(const char *letras );
+//void ClearScreenLCD(void);
 const char *yea;
+char verga = 10;
 void main(void){
     initLCD();
-    StringLCD(yea);
+    WriteCMLCD(1);
+    while(1){
+        WriteDataLCD(1,1,verga);
+        __delay_ms(50);
+    }
+        
+    //StringLCD(yea);
     
     
 }
 void PulsoE(void){
-    LCD_E = 1;
-    __delay_ms(30);
     LCD_E = 0;
+    __delay_ms(15);
+    LCD_E = 1;
     //__delay_ms(30);
 }
 
 void WriteCMLCD(unsigned char CM){
+    LCD_Data = 0xFF;
+    LCD_Data = 0X14;
+    LCD_Data &= 0x80;
     LCD_RS=0; // Identifica que se le esta mandando un comando
-    LCD_Data = CM; // Mandar comando a la LCD
+    LCD_RW = 1;
     PulsoE();
+    if (LCD_Data == 0x80){
+        PulsoE();
+    }
+    LCD_Data = CM; // Mandar comando a la LCD
+    LCD_RS = 0;
+    LCD_RW = 0;
+    PulsoE();
+    __delay_ms(5);
+    return;
 }
 
-void WriteDataLCD(char msg ){
-    LCD_RS = 0;
-    __delay_ms(15);
-    LCD_RS = 1;
-    LCD_Data = msg;
-    PulsoE();
+void WriteDataLCD(uint8_t y, uint8_t x, char *msg ){
+    uint8_t dato;
+    switch(y)
+    {
+        case 1: dato = 128+x;
+        break;
+        case 2: dato = 192+x;
+        break;
+        default:
+            break;
+}
+    WriteCMLCD(dato);
+    while(*msg){
+        LCD_CharDisp(*msg);
+        msg ++;
+    }
+}
+void LCD_CharDisp (uint8_t dato){
+    LCD_E =0;
+    LCD_RS =1;
+    PORTBbits.RB7 = (dato & 0b10000000)>>7;
+    PORTBbits.RB7 = (dato & 0b01000000)>>6;
+    PORTBbits.RB7 = (dato & 0b00100000)>>5;
+    PORTBbits.RB7 = (dato & 0b00010000)>>4;
+    PORTBbits.RB7 = (dato & 0b00001000)>>3;
+    PORTBbits.RB7 = (dato & 0b00000100)>>2;
+    PORTBbits.RB7 = (dato & 0b00000010)>>1;
+    PORTBbits.RB7 = (dato & 0b00000001);
+    __delay_ms(10);
+    LCD_E = 1;
+    __delay_ms(5);
+    LCD_E =0;
+    __delay_ms(5);
+    __delay_ms(30);
+            
 }
 
 void initLCD(void){
@@ -107,37 +156,37 @@ void initLCD(void){
    LCD_Data_IO = 0;
    LCD_RW_Dir = 0;
     
-    __delay_ms(40);
-    WriteCMLCD(0x38);
+    __delay_ms(30);
+    WriteCMLCD(56);
     
-    __delay_ms(6);
-    WriteCMLCD(0x0C);
+    //__delay_ms(6);
+    WriteCMLCD(12);
     
-    __delay_us(300);
-    WriteCMLCD(0x01);
+    //__delay_us(300);
+    WriteCMLCD(1);
     
-    __delay_ms(2);
-     WriteCMLCD(0x06);
-     __delay_ms(25);
+    //__delay_ms(2);
+     WriteCMLCD(6);
+     //__delay_ms(25);
     
-    WriteCMLCD(0b00111100); //Set interface Lenght to 8,2 lines, font 5*10
-    WriteCMLCD(0x010); //Apagar Display,
-    WriteCMLCD(0x001); //Limpiar Display
-    WriteCMLCD(0x7); //Direccion de movimiento del cursor, shift display
-    WriteCMLCD(0b00001111); //Enable display, cursor y blink
+    WriteCMLCD(128); //Set interface Lenght to 8,2 lines, font 5*7
+//    WriteCMLCD(0x010); //Apagar Display,
+//    WriteCMLCD(0x001); //Limpiar Display
+//    WriteCMLCD(0x7); //Direccion de movimiento del cursor, shift display
+//    WriteCMLCD(0b00001111); //Enable display, cursor y blink
     
 }
 
-void StringLCD(const char *letras){ //Parametro Volatil
-    while(*letras){
-        WriteDataLCD(*letras ++);
-    }
-}
-
-void ClearScreenLCD(void){
-    WriteCMLCD(0x01);
-    __delay_ms(2);
-}
+//void StringLCD(const char *letras){ //Parametro Volatil
+//    while(*letras){
+//        WriteDataLCD(*letras ++);
+//    }
+//}
+//
+//void ClearScreenLCD(void){
+//    WriteCMLCD(0x01);
+//    __delay_ms(2);
+//}
 //#define LcdDataBus      PORTB
 //#define LcdControlBus   PORTD
 //

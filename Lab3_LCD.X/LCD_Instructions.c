@@ -17,13 +17,15 @@
      * Puerto B = 
      *          RB5 = Entrada Analogica 1
      *          RB4 = Entrada Analogica 2
-     * Puerto A = Salida del contador Binario
+     * Puerto A = Entrada de datos (D7-D0) de la LCD
      * 
-     * Puerto C = Salida del Display de 7 segmentos
+     * Puerto C = Entrada y salida Serial
      * 
-     * Puerto D = D7 y D6 para multiplexar los displays
+     * Puerto D = 
+     *          RD1 = Enable LCD
+     *          RD0 = RS LCD             
      * 
-     * Puerto E = E2 entrada analogica del potenciometro
+     * 
      *
      * Link al Github: https://github.com/Ricochetrj/Lab_2-Interrupciones.git
      * 

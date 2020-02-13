@@ -1,9 +1,3 @@
-/* 
- * File:   LCD_Instructions.h
- * Author: rodri
- *
- * Created on 10 de febrero de 2020, 08:03 PM
- */
 
 #ifndef LCD_INSTRUCTIONS_H
 #define	LCD_INSTRUCTIONS_H
@@ -19,10 +13,8 @@ unsigned char *buffer[7];
 uint8_t i;
 uint8_t valadc;
 
-//uint8_t valana2;
-char word;
+//char word;
 int voltaje;
-//float voltaje2;
 void lcd_chara(uint8_t dato);
 
 void ADCinit(void){
@@ -31,7 +23,6 @@ void ADCinit(void){
     ADCON1bits.VCFG1 =0;
     ADCON0bits.ADCS0 =1;
     ADCON0bits.ADCS1 =0;
-    //ADCON0bits.CHS = 0;
     ADCON0bits.ADON = 1;
                    }
 
@@ -51,6 +42,7 @@ void lcd_clear(void){
 	lcd_comando(0);
 	lcd_comando(1);
 }
+
 void lcd_cursor(char a, char b){
 	char temp;
 	if(a == 1)
@@ -66,6 +58,7 @@ void lcd_cursor(char a, char b){
 	}
     __delay_ms(4);
 }
+
 
 void lcd_init()
 {
@@ -91,6 +84,7 @@ void lcd_init()
   __delay_ms(4);
 }
 
+
 void lcd_char(char a)
 {
    RS = 1;             // => RS = 1
@@ -109,17 +103,20 @@ void lcd_palabra(char *a)
 	   lcd_char(a[i]);
 }
 
+
 void Lcd_Shift_Right()
 {
 	lcd_comando(0x01);
 	lcd_comando(0x0C);
 }
 
+
 void Lcd_Shift_Left()
 {
 	lcd_comando(0x01);
 	lcd_comando(0x08);
 }
+
 
 void ADCread(){
     __delay_ms(10);
@@ -134,24 +131,5 @@ void ADCread(){
     
 }
 
-void lcd_chara (uint8_t dato){
-    EN =0;
-    RS =1;
-    RB7 = (dato & 0b10000000)>>7;
-    RB6 = (dato & 0b01000000)>>6;
-    RB5 = (dato & 0b00100000)>>5;
-    RB4 = (dato & 0b00010000)>>4;
-    RB3 = (dato & 0b00001000)>>3;
-    RB2 = (dato & 0b00000100)>>2;
-    RB1 = (dato & 0b00000010)>>1;
-    RB0 = (dato & 0b00000001);
-    __delay_ms(10);
-    EN = 1;
-    __delay_ms(5);
-    EN = 0;
-    __delay_ms(5);
-    __delay_ms(30);
-    
-}
 #endif	/* LCD_INSTRUCTIONS_H */
 

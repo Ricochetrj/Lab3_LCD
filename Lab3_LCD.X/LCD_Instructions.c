@@ -46,24 +46,14 @@ void main(void) {
         lcd_palabra("V2");
         lcd_cursor(1,13);
         lcd_palabra("V3");
+        
         ADCON0bits.CHS = 0b1011;
         lcd_cursor(2,1);
         ADCread();
-        //int l=25;
-        //char buffer1[2];
-        //itoa(voltaje,buffer,10);   // here 2 means binary
-        
-        //lcd_chara(voltaje);
-        //lcd_palabra(buffer1);
         __delay_ms(10);
         ADCON0bits.CHS = 0b1101;
         lcd_cursor(2,8);
         ADCread();
-        //int m=14;
-        //char buffer2[2];
-        //itoa(m,buffer2,10); 
-       // lcd_cursor(2,8);
-        //lcd_chara(voltaje);
         __delay_ms(250);
         
     }

@@ -126,7 +126,7 @@ void ADCread(){
     ADCON0bits.GO_DONE=1;
     while(ADCON0bits.GO_DONE);
     valadc= ADRESH;
-    voltaje=valadc;//*5.0/255.0;
+    voltaje=valadc*5.0/255.0;
     itoa(buffer,voltaje,10);
 
     lcd_palabra(buffer);

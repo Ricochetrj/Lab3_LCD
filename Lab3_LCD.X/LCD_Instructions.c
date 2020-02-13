@@ -27,11 +27,10 @@
      * 
      * 
      *
-     * Link al Github: https://github.com/Ricochetrj/Lab_2-Interrupciones.git
+     * Link al Github: https://github.com/Ricochetrj/Lab3_LCD.git
      * 
      ****************************************/ 
-
-#pragma config FOSC = INTRC_NOCLKOUT// Oscillator Selection bits (INTOSCIO oscillator: I/O function on RA6/OSC2/CLKOUT pin, I/O function on RA7/OSC1/CLKIN)
+ #pragma config FOSC = INTRC_NOCLKOUT// Oscillator Selection bits (INTOSCIO oscillator: I/O function on RA6/OSC2/CLKOUT pin, I/O function on RA7/OSC1/CLKIN)
 #pragma config WDTE = OFF       // Watchdog Timer Enable bit (WDT disabled and can be enabled by SWDTEN bit of the WDTCON register)
 #pragma config PWRTE = OFF      // Power-up Timer Enable bit (PWRT disabled)
 #pragma config MCLRE = OFF      // RE3/MCLR pin function select bit (RE3/MCLR pin function is digital input, MCLR internally tied to VDD)
@@ -52,34 +51,94 @@
 #include <xc.h>
 #include <stdint.h>
 #include "LCD_Instructions.h"
-
+uint8_t sent;
+uint8_t sent2;
+uint8_t sent3;
+uint8_t sent4;
+void Recieve(void){
+    cascada:
+    if(PIR1bits.RCIF== 1){
+        goto cascada;
+          
+        
+    } 
+    
+   if(PIR1bits.RCIF== 0){
+       sent = 1;
+   }
+    
+    if(PIR1bits.TXIF== 1){
+         PORTDbits.RD3=0;
+        
+    }
+    if(PIR1bits.TXIF==0){
+     
+    PORTDbits.RD3=1;
+    if(ADCON0bits.GO==1){;
+    TXREG= 5;}
+    }
+    
+}
 void main(void) {
     TRISA= 0;
     TRISD = 0;
+    //TRISCbits.TRISC7 = 1;
     PORTA = 0;
     PORTD = 0;
+    sent = 0;
+    /////Com Serial
+    TXSTAbits.SYNC = 0;
+    TXSTAbits.BRGH =1;
+  
+    BAUDCTLbits.BRG16 = 1;
+    SPBRG = 25;
+    SPBRGH = 0;
+    RCSTAbits.SPEN = 1;
+    RCSTAbits.RX9 = 0;
+    RCSTAbits.CREN = 1;
+    TXSTAbits.TXEN = 1;
+    PORTD = 0;
+    
+    ///
     ADCinit();
     lcd_init();
     lcd_clear();
     __delay_ms(250);
     
     while(1){
-        lcd_clear();
-        //Lcd_Shift_Right();
+        //lcd_clear();
+
         lcd_cursor(1,1);
-        lcd_palabra("V1");
+        lcd_palabra("Pot1");
         lcd_cursor(1,7);
-        lcd_palabra("V2");
+        lcd_palabra("Pot2");
         lcd_cursor(1,13);
-        lcd_palabra("V3");
+        lcd_palabra("+/-");
         
         ADCON0bits.CHS = 0b1011;
-        lcd_cursor(2,1);
+        lcd_cursor(2,2);
         ADCread();
+        lcd_cursor(2,1);
+        //itoa(buffer,voltaje,10);
+        ADC2read();
         __delay_ms(10);
         ADCON0bits.CHS = 0b1101;
         lcd_cursor(2,8);
         ADCread();
+        lcd_cursor(2,7);
+        ADC2read();
+        __delay_ms(10);
+       
+       
+        
+        lcd_cursor(2,13);
+        
+        
+        //Recieve();
+       
+        ftoa2(sent, buffer,2);
+        lcd_palabra(buffer);
+        __delay_ms(50);
         __delay_ms(250);
         
     }

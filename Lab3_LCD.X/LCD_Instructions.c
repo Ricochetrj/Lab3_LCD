@@ -32,18 +32,38 @@ void main(void) {
     TRISD = 0;
     PORTA = 0;
     PORTD = 0;
-    
+    ADCinit();
     lcd_init();
     lcd_clear();
     __delay_ms(250);
     
     while(1){
-        //lcd_clear();
+        lcd_clear();
         //Lcd_Shift_Right();
         lcd_cursor(1,1);
-        lcd_palabra("POT 1");
-        lcd_cursor(1,8);
-        lcd_palabra("POT 2");
+        lcd_palabra("V1");
+        lcd_cursor(1,7);
+        lcd_palabra("V2");
+        lcd_cursor(1,13);
+        lcd_palabra("V3");
+        ADCON0bits.CHS = 0b1011;
+        lcd_cursor(2,1);
+        ADCread();
+        //int l=25;
+        //char buffer1[2];
+        //itoa(voltaje,buffer,10);   // here 2 means binary
+        
+        //lcd_chara(voltaje);
+        //lcd_palabra(buffer1);
+        __delay_ms(10);
+        ADCON0bits.CHS = 0b1101;
+        lcd_cursor(2,8);
+        ADCread();
+        //int m=14;
+        //char buffer2[2];
+        //itoa(m,buffer2,10); 
+       // lcd_cursor(2,8);
+        //lcd_chara(voltaje);
         __delay_ms(250);
         
     }

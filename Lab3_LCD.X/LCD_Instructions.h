@@ -12,7 +12,28 @@
 
 
 #include <xc.h> // include processor files - each processor file is guarded.
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+unsigned char *buffer[7];
+uint8_t i;
+uint8_t valadc;
 
+//uint8_t valana2;
+char word;
+int voltaje;
+//float voltaje2;
+void lcd_chara(uint8_t dato);
+
+void ADCinit(void){
+    ADCON1bits.ADFM =0;
+    ADCON1bits.VCFG0 =0;
+    ADCON1bits.VCFG1 =0;
+    ADCON0bits.ADCS0 =1;
+    ADCON0bits.ADCS1 =0;
+    //ADCON0bits.CHS = 0;
+    ADCON0bits.ADON = 1;
+                   }
 
 void lcd_puerto(char a){
     PORTA = a;
@@ -98,6 +119,39 @@ void Lcd_Shift_Left()
 {
 	lcd_comando(0x01);
 	lcd_comando(0x08);
+}
+
+void ADCread(){
+    __delay_ms(10);
+    ADCON0bits.GO_DONE=1;
+    while(ADCON0bits.GO_DONE);
+    valadc= ADRESH;
+    voltaje=valadc;//*5.0/255.0;
+    itoa(buffer,voltaje,10);
+
+    lcd_palabra(buffer);
+    __delay_ms(50);
+    
+}
+
+void lcd_chara (uint8_t dato){
+    EN =0;
+    RS =1;
+    RB7 = (dato & 0b10000000)>>7;
+    RB6 = (dato & 0b01000000)>>6;
+    RB5 = (dato & 0b00100000)>>5;
+    RB4 = (dato & 0b00010000)>>4;
+    RB3 = (dato & 0b00001000)>>3;
+    RB2 = (dato & 0b00000100)>>2;
+    RB1 = (dato & 0b00000010)>>1;
+    RB0 = (dato & 0b00000001);
+    __delay_ms(10);
+    EN = 1;
+    __delay_ms(5);
+    EN = 0;
+    __delay_ms(5);
+    __delay_ms(30);
+    
 }
 #endif	/* LCD_INSTRUCTIONS_H */
 

@@ -1,9 +1,33 @@
-/*
- * File:   LCD_Instructions.c
- * Author: rodri
- *
- * Created on 10 de febrero de 2020, 07:52 PM
- */
+/****************************************
+    * File:    Lab_2_Timers_Int               *
+     * Date:    7/02/2020                   *
+     * Author:  Rodrigo Figueroa             *
+     * Prof:     Pablo Mazariegos            *
+     * Seccion:     20                       *
+     * Clase:   Digital 2                    *
+     * Compiler:    MPLAB XC8 v2.10          *
+     * Arquitectura:    PIC16F887            *
+     * Descripcion: Tercer Laboratorio donde Se leen valores analogicos a una
+     *  LCD Utilizando la configuracion de 8bits de la LCD. Luego usando 
+     *comunicacion serial tipo USART se le manda un valor al display que se incrementa
+     * o decrementa en la terminal de la PC
+     * 
+     * 
+     * Asignacion de Pins:
+     * Puerto B = 
+     *          RB5 = Entrada Analogica 1
+     *          RB4 = Entrada Analogica 2
+     * Puerto A = Salida del contador Binario
+     * 
+     * Puerto C = Salida del Display de 7 segmentos
+     * 
+     * Puerto D = D7 y D6 para multiplexar los displays
+     * 
+     * Puerto E = E2 entrada analogica del potenciometro
+     *
+     * Link al Github: https://github.com/Ricochetrj/Lab_2-Interrupciones.git
+     * 
+     ****************************************/ 
 
 #pragma config FOSC = INTRC_NOCLKOUT// Oscillator Selection bits (INTOSCIO oscillator: I/O function on RA6/OSC2/CLKOUT pin, I/O function on RA7/OSC1/CLKIN)
 #pragma config WDTE = OFF       // Watchdog Timer Enable bit (WDT disabled and can be enabled by SWDTEN bit of the WDTCON register)

@@ -19,7 +19,7 @@
      *          RB4 = Entrada Analogica 2
      * Puerto A = Entrada de datos (D7-D0) de la LCD
      * 
-     * Puerto C = Entrada y salida Serial
+     * Puerto C = Entrada y salida Serial en RC6 y RC7
      * 
      * Puerto D = 
      *          RD1 = Enable LCD
@@ -52,76 +52,61 @@
 #include <stdint.h>
 #include "LCD_Instructions.h"
 uint8_t sent;
-uint8_t sent2;
-uint8_t sent3;
-uint8_t sent4;
 void Recieve(void){
-    cascada:
-    if(PIR1bits.RCIF== 1){
-        goto cascada;
-          
-        
-    } 
-    
-   if(PIR1bits.RCIF== 0){
-       sent = 1;
-   }
-    
-    if(PIR1bits.TXIF== 1){
-         PORTDbits.RD3=0;
-        
-    }
-    if(PIR1bits.TXIF==0){
-     
-    PORTDbits.RD3=1;
-    if(ADCON0bits.GO==1){;
-    TXREG= 5;}
+    if(OERR) // check for Error 
+    {
+        CREN = 0; //If error -> Reset 
+        CREN = 1; 
     }
     
+    while(!RCIF);  // esperar hasta que se reciban todos los datos
+    
+    sent = RCREG; //mandar datos a una variable
 }
+    
 void main(void) {
-    TRISA= 0;
+    TRISA= 0;// Inicializar puertos
     TRISD = 0;
-    //TRISCbits.TRISC7 = 1;
+    TRISC = 0b01000000;
     PORTA = 0;
     PORTD = 0;
     sent = 0;
+    
     /////Com Serial
-    TXSTAbits.SYNC = 0;
+    TXSTAbits.SYNC = 0;// Modo Asyncrono
     TXSTAbits.BRGH =1;
   
     BAUDCTLbits.BRG16 = 1;
-    SPBRG = 25;
+    SPBRG = 25;// Baudrate de 9600
     SPBRGH = 0;
     RCSTAbits.SPEN = 1;
     RCSTAbits.RX9 = 0;
-    RCSTAbits.CREN = 1;
+    RCSTAbits.CREN = 1;// Permitir recibir y mandar
     TXSTAbits.TXEN = 1;
-    PORTD = 0;
+    TX9 = 0;// Modo de 8 bits
+    RX9 = 0;
     
     ///
-    ADCinit();
-    lcd_init();
-    lcd_clear();
+    
+    ADCinit(); // Iniciar ADC
+    lcd_init();// Iniciar LCD
+    lcd_clear();// Limpiar pantalla de LCD
     __delay_ms(250);
     
     while(1){
-        //lcd_clear();
-
-        lcd_cursor(1,1);
+        //Potenciometro 1
+        lcd_cursor(1,1);// Poner texto de potenciometro en posicion 1
         lcd_palabra("Pot1");
+        ADCON0bits.CHS = 0b1011;// Leer potenciometro en canal 11 y poner entero y decimales abajo del texto
+        lcd_cursor(2,2);
+        ADCread();// Leer valor y convertir entero a texto
+        lcd_cursor(2,1);
+        ADC2read();// Leer valor y convertir decimales a texto
+         __delay_ms(10);
+       
+         //Potenciometro 2
         lcd_cursor(1,7);
         lcd_palabra("Pot2");
-        lcd_cursor(1,13);
-        lcd_palabra("+/-");
-        
-        ADCON0bits.CHS = 0b1011;
-        lcd_cursor(2,2);
-        ADCread();
-        lcd_cursor(2,1);
-        //itoa(buffer,voltaje,10);
-        ADC2read();
-        __delay_ms(10);
         ADCON0bits.CHS = 0b1101;
         lcd_cursor(2,8);
         ADCread();
@@ -129,16 +114,13 @@ void main(void) {
         ADC2read();
         __delay_ms(10);
        
-       
-        
+        // Valor USART
+        lcd_cursor(1,13);
+        lcd_palabra("+/-");
         lcd_cursor(2,13);
-        
-        
-        //Recieve();
-       
-        ftoa2(sent, buffer,2);
-        lcd_palabra(buffer);
-        __delay_ms(50);
+        Recieve(); // Recibir el valor de USART y mandarlo a variable
+        ftoa2(sent, buffer,2); // Convertir Variable en Texto
+        lcd_palabra(buffer);// Desplegar la Variable
         __delay_ms(250);
         
     }

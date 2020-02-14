@@ -12,28 +12,23 @@
 unsigned char *buffer[10];
 uint8_t i;
 uint8_t valadc;
-
-//uint8_t valana2;
-char word;
-double voltaje;
-//float voltaje2;
+float voltaje;
 void lcd_chara(uint8_t dato);
 void ftoa2(float n, char* res, int afterpoint);
 void ADCinit(void){
-    ADCON1bits.ADFM =0;
+    ADCON1bits.ADFM =0;// Justificacion izquierda y voltajes de referencia VDD y VSS
     ADCON1bits.VCFG0 =0;
     ADCON1bits.VCFG1 =0;
-    ADCON0bits.ADCS0 =1;
+    ADCON0bits.ADCS0 =1;// Iniciar ADC y determinar como va a leer
     ADCON0bits.ADCS1 =0;
-    //ADCON0bits.CHS = 0;
     ADCON0bits.ADON = 1;
                    }
 
-void lcd_puerto(char a){
+void lcd_puerto(char a){ // Mandar valores al puerto donde esta conectado la LCD
     PORTA = a;
 }
 
-void lcd_comando(char a){
+void lcd_comando(char a){ // Apagar RS para que la LCD sepa que se le esta mandando un comando y no datos
     RS = 0;
     lcd_puerto(a);
     EN = 1;
@@ -41,11 +36,11 @@ void lcd_comando(char a){
     EN = 0;
 }
 
-void lcd_clear(void){
+void lcd_clear(void){ // Limpiar pantalla de la LCD
 	lcd_comando(0);
 	lcd_comando(1);
 }
-void lcd_cursor(char a, char b){
+void lcd_cursor(char a, char b){ // Poner el cursor de la LCD en una posicion para que imprima caracteres ahi
 	char temp;
 	if(a == 1)
 	{
@@ -61,7 +56,7 @@ void lcd_cursor(char a, char b){
     __delay_ms(4);
 }
 
-void lcd_init()
+void lcd_init() // Mandar los comandos segun la guia, para inicializar la LCD
 {
  
    __delay_ms(20);
@@ -85,7 +80,7 @@ void lcd_init()
   __delay_ms(4);
 }
 
-void lcd_char(char a)
+void lcd_char(char a) // Mandar un solo character a la LCD
 {
    RS = 1;             // => RS = 1
    lcd_puerto(a);             //Data transfer
@@ -96,26 +91,26 @@ void lcd_char(char a)
 
 
 
-void lcd_palabra(char *a)
+void lcd_palabra(char *a) // Mandar string de caracteres y leerlos 1 por 1
 {
 	int i;
 	for(i=0;a[i]!='\0';i++)
 	   lcd_char(a[i]);
 }
 
-void Lcd_Shift_Right()
+void Lcd_Shift_Right()// Correr la pantalla a la Derecha
 {
 	lcd_comando(0x01);
 	lcd_comando(0x0C);
 }
 
-void Lcd_Shift_Left()
+void Lcd_Shift_Left() // Correr la Pantalla a la izquierda
 {
 	lcd_comando(0x01);
 	lcd_comando(0x08);
 }
 
-void ADCread(){
+void ADCread(){ // Iniciar lectura de ADC, Esperar a que termine de leer, convertir dato de 0-1024 a 0-5 y desplegar los decimales en la LCD 
     __delay_ms(10);
     ADCON0bits.GO_DONE=1;
     while(ADCON0bits.GO_DONE);
@@ -128,40 +123,19 @@ void ADCread(){
     __delay_ms(50);
     
 }
-void ADC2read(void){
+void ADC2read(void){ // Iniciar lectura de ADC, Esperar a que termine de leer, convertir dato de 0-1024 a 0-5 y desplegar los enteros en la LCD 
     __delay_ms(10);
     ADCON0bits.GO_DONE=1;
     while(ADCON0bits.GO_DONE);
     valadc= ADRESH;
     voltaje=valadc*5.0/255.0;
      itoa(buffer,voltaje,10);
-   //toa2(voltaje,buffer,2);
-
     lcd_palabra(buffer);
     __delay_ms(50);
     
 }
-void lcd_chara (uint8_t dato){
-    EN =0;
-    RS =1;
-    RB7 = (dato & 0b10000000)>>7;
-    RB6 = (dato & 0b01000000)>>6;
-    RB5 = (dato & 0b00100000)>>5;
-    RB4 = (dato & 0b00010000)>>4;
-    RB3 = (dato & 0b00001000)>>3;
-    RB2 = (dato & 0b00000100)>>2;
-    RB1 = (dato & 0b00000010)>>1;
-    RB0 = (dato & 0b00000001);
-    __delay_ms(10);
-    EN = 1;
-    __delay_ms(5);
-    EN = 0;
-    __delay_ms(5);
-    __delay_ms(30);
-    
-}
 
-////Tomado de Geeks
+////Tomado de Geeks- Fuuncion para convertir Floats y Doubles en Strings
 void reverse(char* str, int len){
     int i = 0, j= len - 1, temp;
     while (i<j){
